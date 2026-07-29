@@ -1,0 +1,1204 @@
+{
+  "entries": [
+    {
+      "id": "units",
+      "title": "units",
+      "entry_type": "capability",
+      "content": "Set unit system\n\n## Syntax\nunits style\n\n## Description\nSet the unit system for the simulation. Must appear before the simulation box is defined. Common choices: metal (eV, Å, ps, K, bar) for materials, real (kcal/mol, Å, fs, K, atm) for biomolecular, lj (reduced) for generic models.",
+      "tags": [
+        "init",
+        "weight=10",
+        "weight=10",
+        "weight=2"
+      ],
+      "metadata_json": {
+        "phase": "init",
+        "syntax": "units style",
+        "keywords": {
+          "style": {
+            "type": "keyword",
+            "options": "lj|real|metal|si|cgs|electron|micro|nano",
+            "default": "lj",
+            "desc": "Unit system."
+          },
+          "real": "kcal/mol, Å, fs, K, atm — biomolecular",
+          "metal": "eV, Å, ps, K, bar — materials science",
+          "lj": "σ, ε, m = 1 — reduced units"
+        },
+        "examples": [
+          "units metal",
+          "units real"
+        ],
+        "restrictions": "Cannot be used after simulation box is defined (read_data, create_box).",
+        "url": "https://docs.lammps.org/units.html"
+      }
+    },
+    {
+      "id": "boundary",
+      "title": "boundary",
+      "entry_type": "capability",
+      "content": "Set boundary conditions\n\n## Syntax\nboundary x y z\n\n## Description\nSet boundary style for each dimension. p = periodic (required for NPT barostatted dimensions), f = fixed (non-periodic), s = shrink-wrap, m = minimum. For bulk NVE/NVT/NPT: use p p p.",
+      "tags": [
+        "init",
+        "weight=10",
+        "weight=10",
+        "weight=3"
+      ],
+      "metadata_json": {
+        "phase": "init",
+        "syntax": "boundary x y z",
+        "keywords": {
+          "x|y|z": {
+            "type": "keyword",
+            "options": "p|f|s|m",
+            "default": "p",
+            "desc": "Boundary per dimension."
+          }
+        },
+        "examples": [
+          "boundary p p p",
+          "boundary p p f"
+        ],
+        "restrictions": "None.",
+        "url": "https://docs.lammps.org/boundary.html"
+      }
+    },
+    {
+      "id": "timestep",
+      "title": "timestep",
+      "entry_type": "capability",
+      "content": "Set MD timestep\n\n## Syntax\ntimestep dt\n\n## Description\nSet MD timestep size. Default varies by units: lj=0.005τ, real=1.0fs, metal=0.001ps, si=1e-8s. Tdamp recommendation for NVT: ~100*dt. Pdamp recommendation for NPT: ~1000*dt liquid, ~10000*dt solid.",
+      "tags": [
+        "init",
+        "weight=2",
+        "weight=2"
+      ],
+      "metadata_json": {
+        "phase": "init",
+        "syntax": "timestep dt",
+        "keywords": {
+          "dt": {
+            "type": "float",
+            "default": "unit-dependent",
+            "desc": "Timestep. real:1.0fs, metal:0.001ps."
+          }
+        },
+        "examples": [
+          "timestep 1.0",
+          "timestep 0.001"
+        ],
+        "restrictions": "None.",
+        "url": "https://docs.lammps.org/timestep.html"
+      }
+    },
+    {
+      "id": "atom_style",
+      "title": "atom_style",
+      "entry_type": "capability",
+      "content": "Define atom attributes\n\n## Syntax\natom_style style args\n\n## Description\nDefine what attributes are stored per atom. atomic (id,type,x,v), charge (+q), full (molecular: bonds,angles,dihedrals,impropers + charge), molecular (no charge). Must be set before read_data or create_box.",
+      "tags": [
+        "init",
+        "weight=10"
+      ],
+      "metadata_json": {
+        "phase": "init",
+        "syntax": "atom_style style args",
+        "keywords": {
+          "style": {
+            "type": "keyword",
+            "options": "atomic|charge|full|molecular|sphere|...",
+            "default": "atomic",
+            "desc": "Atom style."
+          }
+        },
+        "examples": [
+          "atom_style atomic",
+          "atom_style full"
+        ],
+        "restrictions": "Must be set before read_data or create_box.",
+        "url": "https://docs.lammps.org/atom_style.html"
+      }
+    },
+    {
+      "id": "lattice",
+      "title": "lattice",
+      "entry_type": "capability",
+      "content": "Define crystal lattice\n\n## Syntax\nlattice style scale args\n\n## Description\nDefine crystal lattice for use by create_atoms. style: none, sc, bcc, fcc, hcp, diamond, custom. scale: lattice constant in distance units. Used with region + create_atoms to build crystals.",
+      "tags": [
+        "system",
+        "weight=10"
+      ],
+      "metadata_json": {
+        "phase": "system",
+        "syntax": "lattice style scale args",
+        "keywords": {
+          "style": {
+            "type": "keyword",
+            "options": "sc|bcc|fcc|hcp|diamond|custom|...",
+            "default": "none",
+            "desc": "Lattice type."
+          },
+          "scale": {
+            "type": "float",
+            "default": "—",
+            "desc": "Lattice constant (distance units)."
+          },
+          "a|a1,a2,a3": {
+            "type": "float(s)",
+            "default": "—",
+            "desc": "Basis vectors for custom style."
+          }
+        },
+        "examples": [
+          "lattice fcc 4.05",
+          "lattice bcc 3.16"
+        ],
+        "restrictions": "None.",
+        "url": "https://docs.lammps.org/lattice.html"
+      }
+    },
+    {
+      "id": "region",
+      "title": "region",
+      "entry_type": "capability",
+      "content": "Define spatial region\n\n## Syntax\nregion ID style args\n\n## Description\nDefine geometric region. style: block, sphere, cylinder, cone, prism, union, intersect, subtract. Blocks defined by xlo xhi ylo yhi zlo zhi. Used as input to create_box, create_atoms, group, fix, compute, dump.",
+      "tags": [
+        "system",
+        "weight=10",
+        "weight=10"
+      ],
+      "metadata_json": {
+        "phase": "system",
+        "syntax": "region ID style args",
+        "keywords": {
+          "style": {
+            "type": "keyword",
+            "options": "block|sphere|cylinder|union|intersect|...",
+            "default": "—",
+            "desc": "Region shape."
+          },
+          "block": {
+            "type": "6 floats",
+            "default": "—",
+            "desc": "xlo xhi ylo yhi zlo zhi."
+          }
+        },
+        "examples": [
+          "region box block 0 10 0 10 0 10",
+          "region half block 0 5 0 10 0 10"
+        ],
+        "restrictions": "None.",
+        "url": "https://docs.lammps.org/region.html"
+      }
+    },
+    {
+      "id": "create_box",
+      "title": "create_box",
+      "entry_type": "capability",
+      "content": "Create simulation box\n\n## Syntax\ncreate_box N region-ID\n\n## Description\nCreate a simulation box with N atom types, using the specified region for dimensions. Defines the simulation domain. Requires units and boundary to be set first. Must be called before create_atoms.",
+      "tags": [
+        "system",
+        "weight=10",
+        "weight=10",
+        "weight=10",
+        "weight=10",
+        "weight=5"
+      ],
+      "metadata_json": {
+        "phase": "system",
+        "syntax": "create_box N region-ID",
+        "keywords": {
+          "N": {
+            "type": "int",
+            "default": "—",
+            "desc": "Number of atom types."
+          },
+          "region-ID": {
+            "type": "ID",
+            "default": "—",
+            "desc": "Region defining box dimensions."
+          }
+        },
+        "examples": [
+          "create_box 1 box",
+          "create_box 3 myregion"
+        ],
+        "restrictions": "Requires units and boundary set first. Region must exist.",
+        "url": "https://docs.lammps.org/create_box.html"
+      }
+    },
+    {
+      "id": "create_atoms",
+      "title": "create_atoms",
+      "entry_type": "capability",
+      "content": "Fill box with atoms\n\n## Syntax\ncreate_atoms type style args\n\n## Description\nCreate atoms of given type in the simulation box. style: box (fill entire box on lattice), region (fill region on lattice), random (random positions), single (one atom at specified position). Requires lattice, region, and create_box to be set first.",
+      "tags": [
+        "system",
+        "weight=10",
+        "weight=10",
+        "weight=10",
+        "weight=10"
+      ],
+      "metadata_json": {
+        "phase": "system",
+        "syntax": "create_atoms type style args",
+        "keywords": {
+          "type": {
+            "type": "int",
+            "default": "—",
+            "desc": "Atom type number."
+          },
+          "style": {
+            "type": "keyword",
+            "options": "box|region|random|single|mesh",
+            "default": "box",
+            "desc": "Fill style."
+          }
+        },
+        "examples": [
+          "create_atoms 1 box",
+          "create_atoms 2 region half"
+        ],
+        "restrictions": "Requires lattice, region, create_box. Must have periodic boundaries.",
+        "url": "https://docs.lammps.org/create_atoms.html"
+      }
+    },
+    {
+      "id": "read_data",
+      "title": "read_data",
+      "entry_type": "capability",
+      "content": "Read structure from file\n\n## Syntax\nread_data file keyword args ...\n\n## Description\nRead a LAMMPS data file containing simulation box dimensions, atom coordinates, and optionally topology (bonds, angles, etc.). Defines the simulation box. Alternative to create_box + create_atoms for complex systems.",
+      "tags": [
+        "system",
+        "weight=10",
+        "weight=10",
+        "weight=10",
+        "weight=10",
+        "weight=10"
+      ],
+      "metadata_json": {
+        "phase": "system",
+        "syntax": "read_data file keyword args ...",
+        "keywords": {
+          "file": {
+            "type": "filename",
+            "default": "—",
+            "desc": "Data file path."
+          },
+          "add": {
+            "type": "keyword",
+            "default": "—",
+            "desc": "add merge|append offset N — for adding atoms to existing system."
+          },
+          "offset": {
+            "type": "int",
+            "default": "—",
+            "desc": "Atom type offset for merge operations."
+          }
+        },
+        "examples": [
+          "read_data my_system.data",
+          "read_data polymer.data add append offset 6"
+        ],
+        "restrictions": "Defines the simulation box. Must be after units, boundary, atom_style.",
+        "url": "https://docs.lammps.org/read_data.html"
+      }
+    },
+    {
+      "id": "velocity",
+      "title": "velocity",
+      "entry_type": "capability",
+      "content": "Initialize atom velocities\n\n## Syntax\nvelocity group-ID style args keyword value ...\n\n## Description\nSet or change atom velocities. create: random velocities at temperature T with seed. set: explicit vx vy vz. scale: rescale to target T. zero: cancel linear/angular momentum. Tip: for rigid bodies, do 'run 0' then 'velocity all scale T'.",
+      "tags": [
+        "system",
+        "weight=10",
+        "weight=10",
+        "weight=5",
+        "weight=5",
+        "weight=3"
+      ],
+      "metadata_json": {
+        "phase": "system",
+        "syntax": "velocity group-ID style args keyword value ...",
+        "keywords": {
+          "create": {
+            "type": "temp seed",
+            "default": "—",
+            "desc": "Generate random velocities at T."
+          },
+          "set": {
+            "type": "vx vy vz/NULL",
+            "default": "—",
+            "desc": "Set explicit components."
+          },
+          "scale": {
+            "type": "temp",
+            "default": "—",
+            "desc": "Rescale to temperature."
+          },
+          "dist": {
+            "type": "uniform|gaussian",
+            "default": "uniform",
+            "desc": "Random distribution."
+          },
+          "loop": {
+            "type": "all|local|geom",
+            "default": "all",
+            "desc": "RNG scope for parallel runs."
+          }
+        },
+        "examples": [
+          "velocity all create 300.0 4928459",
+          "velocity all create 300.0 4928459 rot yes dist gaussian"
+        ],
+        "restrictions": "create with rigid bodies/SHAKE: do run 0 then velocity scale T.",
+        "url": "https://docs.lammps.org/velocity.html"
+      }
+    },
+    {
+      "id": "pair_style",
+      "title": "pair_style lj/cut",
+      "entry_type": "capability",
+      "content": "Lennard-Jones potential\n\n## Syntax\npair_style style args\n\n## Description\nDefine pair potential. lj/cut: Lennard-Jones 12-6 with cutoff, E=4ε[(σ/r)¹²−(σ/r)⁶] for r<rcut. Basic model for noble gases and generic MD. For NVT/NPT with real materials, use eam, meam, reaxff, or buck.",
+      "tags": [
+        "force",
+        "weight=10",
+        "weight=10",
+        "weight=2",
+        "weight=2"
+      ],
+      "metadata_json": {
+        "phase": "force",
+        "syntax": "pair_style style args",
+        "keywords": {
+          "style": {
+            "type": "keyword",
+            "options": "lj/cut|eam|meam|buck|reaxff|...",
+            "default": "—",
+            "desc": "Pair style. 200+ available."
+          },
+          "cutoff": {
+            "type": "float",
+            "default": "—",
+            "desc": "Cutoff distance for lj/cut."
+          }
+        },
+        "examples": [
+          "pair_style lj/cut 2.5",
+          "pair_style eam"
+        ],
+        "restrictions": "Must be set before pair_coeff, fix, run.",
+        "url": "https://docs.lammps.org/pair_style.html"
+      }
+    },
+    {
+      "id": "pair_coeff",
+      "title": "pair_coeff",
+      "entry_type": "capability",
+      "content": "Set pair coefficients\n\n## Syntax\npair_coeff I J args ...\n\n## Description\nSet coefficients for pair interactions between atom types I and J. For lj/cut: epsilon sigma [cutoff]. Use * * to set all pairs. Must be called after pair_style.",
+      "tags": [
+        "force",
+        "weight=10"
+      ],
+      "metadata_json": {
+        "phase": "force",
+        "syntax": "pair_coeff I J args ...",
+        "keywords": {
+          "I J": {
+            "type": "int int",
+            "default": "—",
+            "desc": "Atom type pair (* * = all)."
+          },
+          "epsilon": {
+            "type": "float",
+            "default": "—",
+            "desc": "Energy well depth (energy units)."
+          },
+          "sigma": {
+            "type": "float",
+            "default": "—",
+            "desc": "Zero-crossing distance (distance units)."
+          }
+        },
+        "examples": [
+          "pair_coeff * * 1.0 1.0",
+          "pair_coeff 1 2 0.5 3.0 4.0"
+        ],
+        "restrictions": "Must be after pair_style and mass.",
+        "url": "https://docs.lammps.org/pair_coeff.html"
+      }
+    },
+    {
+      "id": "fix_nve",
+      "title": "fix nve",
+      "entry_type": "procedure",
+      "content": "NVE time integration\n\n## Syntax\nfix ID group-ID nve\n\n## Description\nPlain NVE ensemble via velocity-Verlet integration. No thermostat or barostat — only updates positions and velocities from forces. Combine with fix langevin for Brownian dynamics thermostat. Use fix nvt/npt if you need temperature/pressure control.",
+      "tags": [
+        "integ",
+        "weight=10",
+        "weight=10",
+        "weight=8",
+        "weight=5",
+        "weight=2"
+      ],
+      "metadata_json": {
+        "phase": "integ",
+        "syntax": "fix ID group-ID nve",
+        "keywords": {
+          "ID": {
+            "type": "string",
+            "default": "—",
+            "desc": "User-defined fix name."
+          },
+          "group-ID": {
+            "type": "ID",
+            "default": "—",
+            "desc": "Atom group (all = all atoms)."
+          }
+        },
+        "examples": [
+          "fix 1 all nve",
+          "fix integrate mobile nve"
+        ],
+        "restrictions": "None.",
+        "url": "https://docs.lammps.org/fix_nve.html"
+      }
+    },
+    {
+      "id": "fix_langevin",
+      "title": "fix langevin",
+      "entry_type": "procedure",
+      "content": "Langevin thermostat\n\n## Syntax\nfix ID group-ID langevin Tstart Tstop damp seed keyword values ...\n\n## Description\nStochastic Langevin thermostat. F = F_c + F_f + F_r (conservative + friction + random). F_f = -(m/damp)*v. Random force uniform (not Gaussian). Does NOT perform time integration — MUST be combined with fix nve. Temperature ramps Tstart→Tstop over run.",
+      "tags": [
+        "integ",
+        "weight=10",
+        "weight=10",
+        "weight=8",
+        "weight=5",
+        "weight=2"
+      ],
+      "metadata_json": {
+        "phase": "integ",
+        "syntax": "fix ID group-ID langevin Tstart Tstop damp seed keyword values ...",
+        "keywords": {
+          "Tstart": {
+            "type": "float",
+            "default": "—",
+            "desc": "Start temperature (can be variable)."
+          },
+          "Tstop": {
+            "type": "float",
+            "default": "—",
+            "desc": "End temperature."
+          },
+          "damp": {
+            "type": "float",
+            "default": "—",
+            "desc": "Damping (time). F_f=-m*v/damp."
+          },
+          "seed": {
+            "type": "int",
+            "default": "—",
+            "desc": "Random seed (positive integer)."
+          },
+          "tally": {
+            "type": "yes|no",
+            "default": "no",
+            "desc": "Energy accounting for ecouple."
+          },
+          "zero": {
+            "type": "yes|no",
+            "default": "no",
+            "desc": "Zero total force (no COM drift)."
+          }
+        },
+        "examples": [
+          "fix 1 all langevin 300.0 300.0 100.0 48279",
+          "fix 1 all langevin 1.0 1.1 100.0 48279 scale 3 1.5"
+        ],
+        "restrictions": "Must be combined with fix nve (does NOT perform time integration).",
+        "url": "https://docs.lammps.org/fix_langevin.html"
+      }
+    },
+    {
+      "id": "fix_nh",
+      "title": "fix nvt / fix npt / fix nph",
+      "entry_type": "procedure",
+      "content": "Nose-Hoover thermostat+barostat\n\n## Syntax\nfix ID group-ID style_name keyword value ...\n  style_name = nvt | npt | nph\n\n## Description\nNose-Hoover thermostat+barostat. nvt: canonical (T). npt: isothermal-isobaric (T+P). nph: isenthalpic (P only). Performs BOTH thermostatting AND time integration — do NOT combine with fix nve on the same atoms. Internally creates compute fix_ID_temp and fix_ID_press.\n\nKey keywords: temp Tstart Tstop Tdamp, iso/aniso/tri Pstart Pstop Pdamp. Tdamp~100*dt. Pdamp~1000*dt liquid / ~10000*dt solid. tchain=3, pchain=3, mtk=yes by default.",
+      "tags": [
+        "integ",
+        "weight=10",
+        "weight=10",
+        "weight=8",
+        "weight=8",
+        "weight=7"
+      ],
+      "metadata_json": {
+        "phase": "integ",
+        "syntax": "fix ID group-ID style_name keyword value ...\n  style_name = nvt | npt | nph",
+        "keywords": {
+          "style_name": {
+            "type": "nvt|npt|nph",
+            "default": "—",
+            "desc": "Ensemble: nvt(T), npt(T+P), nph(P)."
+          },
+          "temp": {
+            "type": "Tstart Tstop Tdamp",
+            "default": "—",
+            "desc": "Thermostat: T ~100*dt."
+          },
+          "iso": {
+            "type": "Pstart Pstop Pdamp",
+            "default": "—",
+            "desc": "Isotropic P (couples x,y,z). Pdamp~1000*dt."
+          },
+          "aniso": {
+            "type": "Pstart Pstop Pdamp",
+            "default": "—",
+            "desc": "Anisotropic (x,y,z independent)."
+          },
+          "tri": {
+            "type": "Pstart Pstop Pdamp",
+            "default": "—",
+            "desc": "Triclinic (all 6 dims)."
+          },
+          "tchain": {
+            "type": "int",
+            "default": "3",
+            "desc": "Thermostat chain length."
+          },
+          "pchain": {
+            "type": "int",
+            "default": "3",
+            "desc": "Barostat thermostat chain."
+          },
+          "mtk": {
+            "type": "yes|no",
+            "default": "yes",
+            "desc": "Martyna-Tuckerman-Klein correction."
+          },
+          "drag": {
+            "type": "float",
+            "default": "0.0",
+            "desc": "Damping (0.2-2.0)."
+          },
+          "nreset": {
+            "type": "int",
+            "default": "0",
+            "desc": "Reset ref cell every N steps."
+          }
+        },
+        "examples": [
+          "fix 1 all nvt temp 300.0 300.0 100.0",
+          "fix 1 all npt temp 300.0 300.0 100.0 iso 0.0 0.0 1000.0",
+          "fix 2 jello npt temp 300.0 300.0 100.0 tri 5.0 5.0 1000.0"
+        ],
+        "restrictions": "Barostatted dimensions must be periodic. Tstop != 0.0. Do NOT combine with fix nve.",
+        "url": "https://docs.lammps.org/fix_nh.html"
+      }
+    },
+    {
+      "id": "compute_temp",
+      "title": "compute temp",
+      "entry_type": "tool",
+      "content": "Compute temperature\n\n## Syntax\ncompute ID group-ID temp\n\n## Description\nCompute temperature: T=2*Ekin/(N_DOF*kB). N_DOF=dim*N-dim-fix_constraints. Auto-compute thermo_temp created at startup. Used internally by fix nvt/npt for thermostat control.",
+      "tags": [
+        "compute",
+        "weight=10",
+        "weight=7",
+        "weight=5"
+      ],
+      "metadata_json": {
+        "phase": "compute",
+        "syntax": "compute ID group-ID temp",
+        "keywords": {
+          "ID": {
+            "type": "string",
+            "default": "—",
+            "desc": "User-defined compute name."
+          },
+          "group-ID": {
+            "type": "ID",
+            "default": "—",
+            "desc": "Atom group."
+          }
+        },
+        "examples": [
+          "compute myTemp all temp",
+          "compute hotTemp hotAtoms temp"
+        ],
+        "restrictions": "None.",
+        "url": "https://docs.lammps.org/compute_temp.html"
+      }
+    },
+    {
+      "id": "compute_pressure",
+      "title": "compute pressure",
+      "entry_type": "tool",
+      "content": "Compute pressure\n\n## Syntax\ncompute ID group-ID pressure temp-ID keyword ...\n\n## Description\nCompute pressure: P=(N*kB*T+Virial)/V. Includes pair/bond/angle/dihedral/improper/kspace/fix contributions. Needs a temperature compute (usually thermo_temp). Auto-compute thermo_press created at startup. Used internally by fix npt/nph for barostat control.",
+      "tags": [
+        "compute",
+        "weight=10",
+        "weight=7",
+        "weight=3"
+      ],
+      "metadata_json": {
+        "phase": "compute",
+        "syntax": "compute ID group-ID pressure temp-ID keyword ...",
+        "keywords": {
+          "ID": {
+            "type": "string",
+            "default": "—",
+            "desc": "User-defined compute name."
+          },
+          "group-ID": {
+            "type": "ID",
+            "default": "—",
+            "desc": "Atom group."
+          },
+          "temp-ID": {
+            "type": "compute-ID",
+            "default": "thermo_temp",
+            "desc": "Temperature compute for P formula."
+          }
+        },
+        "examples": [
+          "compute myPress all pressure thermo_temp",
+          "compute 1 all pressure myTemp"
+        ],
+        "restrictions": "None.",
+        "url": "https://docs.lammps.org/compute_pressure.html"
+      }
+    },
+    {
+      "id": "thermo",
+      "title": "thermo",
+      "entry_type": "tool",
+      "content": "Output frequency\n\n## Syntax\nthermo N\n\n## Description\nPrint thermodynamic info every N timesteps. 0 = start/end only. N can be an equal-style variable for dynamic scheduling (logfreq, stride, stagger). For NVT/NPT, thermo 100 prints T, P, E every 100 steps.",
+      "tags": [
+        "output",
+        "weight=2",
+        "weight=2",
+        "weight=2"
+      ],
+      "metadata_json": {
+        "phase": "output",
+        "syntax": "thermo N",
+        "keywords": {
+          "N": {
+            "type": "int|v_name",
+            "default": "0",
+            "desc": "Output every N steps. 0=start/end only."
+          }
+        },
+        "examples": [
+          "thermo 100",
+          "thermo v_s"
+        ],
+        "restrictions": "None.",
+        "url": "https://docs.lammps.org/thermo.html"
+      }
+    },
+    {
+      "id": "thermo_style",
+      "title": "thermo_style",
+      "entry_type": "tool",
+      "content": "Thermo content\n\n## Syntax\nthermo_style style args\n\n## Description\nControl what thermodynamic data is printed. one: step temp epair emol etotal press. multi: labeled multi-line. custom: any combination of 40+ fields (step,temp,press,pe,ke,etotal,vol,density,pxx-pyz,c_ID,f_ID,v_name). Must come after box is defined.",
+      "tags": [
+        "output",
+        "weight=10",
+        "weight=2",
+        "weight=2"
+      ],
+      "metadata_json": {
+        "phase": "output",
+        "syntax": "thermo_style style args",
+        "keywords": {
+          "style": {
+            "type": "one|multi|yaml|custom",
+            "default": "one",
+            "desc": "Output style."
+          },
+          "custom fields": {
+            "type": "keyword list",
+            "default": "—",
+            "desc": "step,temp,press,pe,ke,etotal,vol,..."
+          }
+        },
+        "examples": [
+          "thermo_style custom step temp pe etotal press vol",
+          "thermo_style multi"
+        ],
+        "restrictions": "Must come after read_data, read_restart, or create_box.",
+        "url": "https://docs.lammps.org/thermo_style.html"
+      }
+    },
+    {
+      "id": "dump",
+      "title": "dump",
+      "entry_type": "tool",
+      "content": "Write trajectory\n\n## Syntax\ndump ID group-ID style N file args\n\n## Description\nWrite atom snapshots every N timesteps. style: atom (LAMMPS format), custom (choose fields), xyz (generic XYZ), image (rendered image). For NVT/NPT trajectory: dump 1 all custom 100 traj.lammpstrj id type x y z.",
+      "tags": [
+        "output",
+        "weight=10",
+        "weight=2"
+      ],
+      "metadata_json": {
+        "phase": "output",
+        "syntax": "dump ID group-ID style N file args",
+        "keywords": {
+          "ID": {
+            "type": "string",
+            "default": "—",
+            "desc": "Dump name."
+          },
+          "group-ID": {
+            "type": "ID",
+            "default": "all",
+            "desc": "Atom group to output."
+          },
+          "style": {
+            "type": "atom|custom|xyz|image|...",
+            "default": "atom",
+            "desc": "Output format."
+          },
+          "N": {
+            "type": "int",
+            "default": "—",
+            "desc": "Write every N steps."
+          },
+          "fields": {
+            "type": "keyword list",
+            "default": "—",
+            "desc": "id,type,x,y,z,vx,vy,vz,fx,fy,fz,..."
+          }
+        },
+        "examples": [
+          "dump 1 all custom 100 traj.lammpstrj id type x y z",
+          "dump 1 all xyz 1000 traj.xyz"
+        ],
+        "restrictions": "Must be after box defined.",
+        "url": "https://docs.lammps.org/dump.html"
+      }
+    },
+    {
+      "id": "Howto_thermostat",
+      "title": "Thermostat Guide",
+      "entry_type": "procedure",
+      "content": "Temperature control methods\n\n## Syntax\n(tutorial — not a command)\n\n## Description\nGuide to temperature control in LAMMPS. Nose-Hoover (fix nvt): deterministic, correct NVT/NPT ensemble. Langevin (fix langevin): stochastic, simple. Berendsen (fix temp/berendsen): weak coupling, NOT correct ensemble, deprecated. Velocity rescaling (fix temp/rescale): crude, for equilibration only.",
+      "tags": [
+        "howto",
+        "weight=3",
+        "weight=3",
+        "weight=3",
+        "weight=3"
+      ],
+      "metadata_json": {
+        "phase": "howto",
+        "syntax": "(tutorial — not a command)",
+        "keywords": {},
+        "examples": [],
+        "restrictions": "",
+        "url": "https://docs.lammps.org/Howto_thermostat.html"
+      }
+    },
+    {
+      "id": "Howto_barostat",
+      "title": "Barostat Guide",
+      "entry_type": "procedure",
+      "content": "Pressure control methods\n\n## Syntax\n(tutorial — not a command)\n\n## Description\nGuide to pressure control. NPT via fix npt (Nose-Hoover): iso (isotropic), aniso (x,y,z independent), tri (full triclinic). NPH via fix nph (no thermostat). Berendsen (fix press/berendsen): deprecated. Must use periodic boundaries in barostatted dimensions. Pdamp~1000*dt liquid, ~10000*dt solid.",
+      "tags": [
+        "howto",
+        "weight=3",
+        "weight=3",
+        "weight=3"
+      ],
+      "metadata_json": {
+        "phase": "howto",
+        "syntax": "(tutorial — not a command)",
+        "keywords": {},
+        "examples": [],
+        "restrictions": "Barostatted dimensions must be periodic.",
+        "url": "https://docs.lammps.org/Howto_barostat.html"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source_id": "read_data",
+      "target_id": "units",
+      "relation": "requires",
+      "weight": 10,
+      "label": "",
+      "source": "'Must be set before the simulation box is defined.'"
+    },
+    {
+      "source_id": "read_data",
+      "target_id": "boundary",
+      "relation": "requires",
+      "weight": 10,
+      "label": "",
+      "source": "'Must be set before the simulation box is defined.'"
+    },
+    {
+      "source_id": "read_data",
+      "target_id": "atom_style",
+      "relation": "requires",
+      "weight": 10,
+      "label": "",
+      "source": "'Must be set before read_data.'"
+    },
+    {
+      "source_id": "create_box",
+      "target_id": "units",
+      "relation": "requires",
+      "weight": 10,
+      "label": "",
+      "source": "'Requires units and boundary to be set first.'"
+    },
+    {
+      "source_id": "create_box",
+      "target_id": "boundary",
+      "relation": "requires",
+      "weight": 10,
+      "label": "",
+      "source": "'Requires units and boundary to be set first.'"
+    },
+    {
+      "source_id": "create_box",
+      "target_id": "region",
+      "relation": "requires",
+      "weight": 10,
+      "label": "",
+      "source": "'Requires region to be defined first.'"
+    },
+    {
+      "source_id": "create_atoms",
+      "target_id": "lattice",
+      "relation": "requires",
+      "weight": 10,
+      "label": "",
+      "source": "'Requires lattice, region, and create_box.'"
+    },
+    {
+      "source_id": "create_atoms",
+      "target_id": "region",
+      "relation": "requires",
+      "weight": 10,
+      "label": "",
+      "source": "'Requires lattice, region, and create_box.'"
+    },
+    {
+      "source_id": "create_atoms",
+      "target_id": "create_box",
+      "relation": "requires",
+      "weight": 10,
+      "label": "",
+      "source": "'Requires lattice, region, and create_box.'"
+    },
+    {
+      "source_id": "pair_coeff",
+      "target_id": "pair_style",
+      "relation": "requires",
+      "weight": 10,
+      "label": "",
+      "source": "'Must be called after pair_style.'"
+    },
+    {
+      "source_id": "fix_nh",
+      "target_id": "read_data",
+      "relation": "requires",
+      "weight": 10,
+      "label": "",
+      "source": "'Must be defined before any fix can be applied.' (fix command doc)"
+    },
+    {
+      "source_id": "fix_nh",
+      "target_id": "pair_style",
+      "relation": "requires",
+      "weight": 10,
+      "label": "",
+      "source": "'Must be defined before any fix.' (pair_style must precede fixes)"
+    },
+    {
+      "source_id": "fix_nve",
+      "target_id": "read_data",
+      "relation": "requires",
+      "weight": 10,
+      "label": "",
+      "source": "'Must be defined before any fix can be applied.'"
+    },
+    {
+      "source_id": "fix_langevin",
+      "target_id": "read_data",
+      "relation": "requires",
+      "weight": 10,
+      "label": "",
+      "source": "'Must be defined before any fix can be applied.'"
+    },
+    {
+      "source_id": "fix_langevin",
+      "target_id": "fix_nve",
+      "relation": "requires",
+      "weight": 10,
+      "label": "",
+      "source": "'Must use another time integration fix like fix nve on the same atoms.'"
+    },
+    {
+      "source_id": "velocity",
+      "target_id": "read_data",
+      "relation": "requires",
+      "weight": 10,
+      "label": "",
+      "source": "'Atoms must exist before setting velocities.'"
+    },
+    {
+      "source_id": "velocity",
+      "target_id": "create_atoms",
+      "relation": "requires",
+      "weight": 10,
+      "label": "",
+      "source": "'Atoms must exist before setting velocities.'"
+    },
+    {
+      "source_id": "thermo_style",
+      "target_id": "read_data",
+      "relation": "requires",
+      "weight": 10,
+      "label": "",
+      "source": "'Must come after the simulation box is defined by read_data, read_restart, or create_box.'"
+    },
+    {
+      "source_id": "dump",
+      "target_id": "read_data",
+      "relation": "requires",
+      "weight": 10,
+      "label": "",
+      "source": "'Must be defined after the simulation box is created.'"
+    },
+    {
+      "source_id": "compute_pressure",
+      "target_id": "compute_temp",
+      "relation": "requires",
+      "weight": 10,
+      "label": "",
+      "source": "'Needs a temperature compute-ID as input argument.'"
+    },
+    {
+      "source_id": "fix_nh",
+      "target_id": "fix_nve",
+      "relation": "incompatible",
+      "weight": 8,
+      "label": "",
+      "source": "'Do not use another time integration fix (like fix nve) on the same atoms.'"
+    },
+    {
+      "source_id": "fix_langevin",
+      "target_id": "fix_nh",
+      "relation": "incompatible",
+      "weight": 8,
+      "label": "",
+      "source": "'Should not normally be used with other thermostatting fixes.'"
+    },
+    {
+      "source_id": "fix_langevin",
+      "target_id": "fix_nve",
+      "relation": "related",
+      "weight": 5,
+      "label": "",
+      "source": "'Langevin thermostat is commonly combined with fix nve for NVT sampling.' (LLM-inferred)"
+    },
+    {
+      "source_id": "fix_nh",
+      "target_id": "compute_temp",
+      "relation": "creates",
+      "weight": 7,
+      "label": "",
+      "source": "'A temperature compute is created internally as if this command were issued: compute fix-ID_temp group-ID temp.'"
+    },
+    {
+      "source_id": "fix_nh",
+      "target_id": "compute_pressure",
+      "relation": "creates",
+      "weight": 7,
+      "label": "",
+      "source": "'A pressure compute is created internally as if this command were issued: compute fix-ID_press group-ID pressure fix-ID_temp.'"
+    },
+    {
+      "source_id": "read_data",
+      "target_id": "create_box",
+      "relation": "alternative",
+      "weight": 5,
+      "label": "",
+      "source": "'Alternative to create_box + create_atoms for complex systems.'"
+    },
+    {
+      "source_id": "velocity",
+      "target_id": "fix_nh",
+      "relation": "related",
+      "weight": 5,
+      "label": "",
+      "source": "'Initialize velocities before running NVT/NPT. Typically in the same input script.'"
+    },
+    {
+      "source_id": "velocity",
+      "target_id": "compute_temp",
+      "relation": "related",
+      "weight": 5,
+      "label": "",
+      "source": "'Velocity creation at a specific temperature requires temperature concept.' (LLM-inferred)"
+    },
+    {
+      "source_id": "fix_nh",
+      "target_id": "fix_modify",
+      "relation": "related",
+      "weight": 2,
+      "label": "",
+      "source": "Related commands: fix_modify"
+    },
+    {
+      "source_id": "fix_nh",
+      "target_id": "run_style",
+      "relation": "related",
+      "weight": 2,
+      "label": "",
+      "source": "Related commands: run_style"
+    },
+    {
+      "source_id": "fix_nve",
+      "target_id": "fix_langevin",
+      "relation": "related",
+      "weight": 2,
+      "label": "",
+      "source": "Related commands of fix nve"
+    },
+    {
+      "source_id": "fix_nve",
+      "target_id": "run_style",
+      "relation": "related",
+      "weight": 2,
+      "label": "",
+      "source": "Related commands: run_style"
+    },
+    {
+      "source_id": "timestep",
+      "target_id": "units",
+      "relation": "related",
+      "weight": 2,
+      "label": "",
+      "source": "'Default value depends on the units command.'"
+    },
+    {
+      "source_id": "timestep",
+      "target_id": "run",
+      "relation": "related",
+      "weight": 2,
+      "label": "",
+      "source": "Related commands: run"
+    },
+    {
+      "source_id": "thermo",
+      "target_id": "thermo_style",
+      "relation": "related",
+      "weight": 2,
+      "label": "",
+      "source": "Related commands: thermo_style"
+    },
+    {
+      "source_id": "thermo_style",
+      "target_id": "thermo",
+      "relation": "related",
+      "weight": 2,
+      "label": "",
+      "source": "Related commands: thermo"
+    },
+    {
+      "source_id": "thermo",
+      "target_id": "thermo_modify",
+      "relation": "related",
+      "weight": 2,
+      "label": "",
+      "source": "Related commands: thermo_modify"
+    },
+    {
+      "source_id": "dump",
+      "target_id": "dump_modify",
+      "relation": "related",
+      "weight": 2,
+      "label": "",
+      "source": "Related commands: dump_modify"
+    },
+    {
+      "source_id": "pair_style",
+      "target_id": "pair_modify",
+      "relation": "related",
+      "weight": 2,
+      "label": "",
+      "source": "Related commands: pair_modify"
+    },
+    {
+      "source_id": "pair_style",
+      "target_id": "kspace_style",
+      "relation": "related",
+      "weight": 2,
+      "label": "",
+      "source": "'Pair_style defines short-range; kspace_style handles long-range electrostatics.' (LLM-inferred)"
+    },
+    {
+      "source_id": "Howto_thermostat",
+      "target_id": "fix_nh",
+      "relation": "howto_ref",
+      "weight": 3,
+      "label": "",
+      "source": "Howto_thermostat page: describes Nose-Hoover thermostat (fix nvt)."
+    },
+    {
+      "source_id": "Howto_thermostat",
+      "target_id": "fix_langevin",
+      "relation": "howto_ref",
+      "weight": 3,
+      "label": "",
+      "source": "Howto_thermostat page: describes Langevin thermostat."
+    },
+    {
+      "source_id": "Howto_thermostat",
+      "target_id": "fix_nve",
+      "relation": "howto_ref",
+      "weight": 3,
+      "label": "",
+      "source": "Howto_thermostat page: mentions NVE as baseline (no thermostat)."
+    },
+    {
+      "source_id": "Howto_thermostat",
+      "target_id": "velocity",
+      "relation": "howto_ref",
+      "weight": 3,
+      "label": "",
+      "source": "Howto_thermostat page: discusses velocity initialization for temperature."
+    },
+    {
+      "source_id": "Howto_barostat",
+      "target_id": "fix_nh",
+      "relation": "howto_ref",
+      "weight": 3,
+      "label": "",
+      "source": "Howto_barostat page: describes NPT/NPH barostat via fix npt/nph."
+    },
+    {
+      "source_id": "Howto_barostat",
+      "target_id": "compute_pressure",
+      "relation": "howto_ref",
+      "weight": 3,
+      "label": "",
+      "source": "Howto_barostat page: references pressure calculation."
+    },
+    {
+      "source_id": "Howto_barostat",
+      "target_id": "boundary",
+      "relation": "howto_ref",
+      "weight": 3,
+      "label": "",
+      "source": "Howto_barostat page: 'Must have periodic boundaries in barostatted dimensions.'"
+    }
+  ]
+}

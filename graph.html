@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>LAMMPS NVT/NPT — Relationship Graph</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/vis-network.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,sans-serif;background:#f5f4f0;color:#333;display:flex;height:100vh;overflow:hidden}
+.panel{width:280px;min-width:280px;background:#fff;border-right:1px solid #e8e6dd;display:flex;flex-direction:column;overflow:hidden}
+.panel .hd{padding:16px}
+.panel .hd h1{font-size:16px;margin-bottom:2px}
+.panel .hd .sub{font-size:10px;color:#999}
+.panel .hd .nav{font-size:10px;margin-top:6px}
+.panel .hd .nav a{color:#5e81ac;text-decoration:none}
+.panel input{width:calc(100% - 24px);margin:0 12px 8px;padding:8px 10px;font-size:13px;border:2px solid #ddd;border-radius:6px;outline:none}
+.panel input:focus{border-color:#5e81ac}
+.panel .list{flex:1;overflow-y:auto;padding:0 12px}
+.panel .list .item{padding:6px 8px;margin-bottom:3px;border-radius:4px;cursor:pointer;font-size:11px;display:flex;align-items:center;gap:6px}
+.panel .list .item:hover{background:#f0efe8}
+.panel .list .item.sel{background:#eef2f7;font-weight:600}
+.panel .list .item .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.panel .info{font-size:10px;color:#bbb;text-align:center;padding:10px;border-top:1px solid #eee}
+#graph{flex:1}
+.legend{position:fixed;bottom:14px;right:14px;background:#fffc;border:1px solid #e8e6dd;border-radius:6px;padding:8px 12px;font-size:10px;line-height:1.7;z-index:10}
+.legend b{font-size:11px}
+.legend span{display:inline-block;width:14px;height:0;border-top:2px solid;margin-right:4px;vertical-align:middle}
+</style>
+</head>
+<body>
+<div class="panel">
+  <div class="hd">
+    <h1>LAMMPS Relationship Graph</h1>
+    <div class="sub" id="hd">22 nodes · 47 edges</div>
+    <div class="nav"><a href="search.html">← back to search</a></div>
+  </div>
+  <input id="q" placeholder="Search..." oninput="doSearch()" autofocus>
+  <div class="list" id="list"></div>
+  <div class="info">drag nodes · scroll zoom · click to focus</div>
+</div>
+<div id="graph"></div>
+<div class="legend">
+  <b>Edge types</b><br>
+  <span style="border-color:#c0c0c0"></span> requires (w=10)<br>
+  <span class="d" style="border-color:#d4a03c;border-style:dashed"></span> incompatible (w=8)<br>
+  <span style="border-color:#5e81ac;border-style:dotted"></span> creates (w=7)<br>
+  <span style="border-color:#8bbf9f;opacity:.5"></span> reference (w=2-3)<br>
+  <span style="border-color:#ccc;opacity:.2"></span> howto (w=3)
+</div>
+<script>
+const PHC={init:"#c47482",system:"#5e81ac",force:"#6b9e5a",integ:"#7c5da0",compute:"#5e81ac",output:"#d4745c",howto:"#999"};
+const PHL={init:"Init",system:"Build",force:"Force",integ:"Integrator",compute:"Compute",output:"Output",howto:"Guide"};
+
+let D=null,network=null;
+(async()=>{
+  const r=await fetch('graph_data.json');D=await r.json();
+  document.getElementById('hd').textContent=`${D.nodes.length} nodes · ${D.edges.length} edges`;
+  buildGraph(); doSearch();
+})();
+
+function buildGraph(focusId=null){
+  const nodes=new vis.DataSet(D.nodes.map(n=>({
+    id:n.id,label:n.title,group:n.phase,
+    title:`<b>${n.title}</b><br>${n.synopsis||n.desc||''}`,
+    url:n.url
+  })));
+
+  const edges=new vis.DataSet(D.edges.map(e=>{
+    let color='#ccc',dashes=false,width=1;
+    if(e.type==='requires'){color='#c0c0c0';width=2;}
+    else if(e.type==='incompatible'){color='#d4a03c';dashes=[6,4];width=2;}
+    else if(e.type==='creates'){color='#5e81ac';dashes=[3,5];width=1.5;}
+    else if(e.type==='howto_ref'){color='#8bbf9f';width=1;}
+    return{from:e.from,to:e.to,color:{color,highlight:color},dashes,width,
+      title:`<b>${e.type}</b> (w=${e.weight||0})<br>${e.source||''}`,label:e.label||''};
+  }));
+
+  const container=document.getElementById('graph');
+  const options={
+    physics:{stabilization:{iterations:100},barnesHut:{springLength:200,damping:0.3}},
+    groups:{
+      init:{color:{background:PHC.init,border:'#fff',highlight:{border:'#333'}},shape:'dot',size:20},
+      system:{color:{background:PHC.system,border:'#fff',highlight:{border:'#333'}},shape:'dot',size:20},
+      force:{color:{background:PHC.force,border:'#fff',highlight:{border:'#333'}},shape:'dot',size:20},
+      integ:{color:{background:PHC.integ,border:'#fff',highlight:{border:'#333'}},shape:'dot',size:28},
+      compute:{color:{background:PHC.compute,border:'#fff',highlight:{border:'#333'}},shape:'dot',size:20},
+      output:{color:{background:PHC.output,border:'#fff',highlight:{border:'#333'}},shape:'dot',size:20},
+      howto:{color:{background:PHC.howto,border:'#fff',highlight:{border:'#333'}},shape:'diamond',size:16},
+    },
+    edges:{smooth:{type:'continuous'},font:{size:9,color:'#999',strokeWidth:0},arrows:{to:{enabled:true,scaleFactor:0.5}}},
+    interaction:{hover:true,tooltipDelay:100,navigationButtons:true,keyboard:true},
+  };
+
+  network=new vis.Network(container,{nodes,edges},options);
+
+  // Click → show detail + focus
+  network.on('click',function(params){
+    if(params.nodes.length){
+      const id=params.nodes[0];
+      // Highlight connected edges
+      const connected=D.edges.filter(e=>e.from===id||e.to===id).map(e=>e.from===id?e.to:e.from);
+      const allConnected=[id,...connected];
+      // Focus: only grey out unrelated
+      D.nodes.forEach(n=>{
+        const nd=nodes.get(n.id);
+        if(nd){nodes.update({id:n.id,opacity:allConnected.includes(n.id)?1:0.2});}
+      });
+      D.edges.forEach(e=>{
+        const ed=edges.get(e.from+e.to);
+        if(ed){edges.update({id:e.from+e.to,opacity:(e.from===id||e.to===id)?1:0.05});}
+      });
+      // Highlight in list
+      document.querySelectorAll('.list .item').forEach(el=>el.classList.toggle('sel',el.dataset.id===id));
+      // Show detail URL bar
+      const n=D.nodes.find(x=>x.id===id);
+      if(n&&n.url)document.getElementById('hd').innerHTML=`<b>${n.title}</b> · <a href="${n.url}" target="_blank" style="color:#5e81ac">docs.lammps.org ↗</a>`;
+    }else{
+      // Un-focus
+      nodes.forEach(n=>nodes.update({id:n.id,opacity:1}));
+      edges.forEach(e=>edges.update({id:e.id,opacity:1}));
+      document.querySelectorAll('.list .item').forEach(el=>el.classList.remove('sel'));
+      document.getElementById('hd').textContent=`${D.nodes.length} nodes · ${D.edges.length} edges`;
+    }
+  });
+
+  // Double-click → open docs
+  network.on('doubleClick',function(params){
+    if(params.nodes.length){
+      const n=D.nodes.find(x=>x.id===params.nodes[0]);
+      if(n&&n.url)window.open(n.url,'_blank');
+    }
+  });
+
+  // Fit on load
+  setTimeout(()=>network.fit({animation:true}),300);
+}
+
+function doSearch(){
+  const q=(document.getElementById('q').value||'').trim().toLowerCase();
+  const toks=q.split(/\s+/).filter(Boolean);
+  let results=D.nodes.map((n,i)=>{
+    if(!toks.length)return{n,i,s:0};
+    const t=(n.title+' '+n.synopsis+' '+n.description).toLowerCase();let s=0;
+    toks.forEach(tk=>{if(n.title.toLowerCase().includes(tk))s+=20;else if(t.includes(tk))s+=10;});
+    return s>0?{n,i,s}:null;
+  }).filter(Boolean).sort((a,b)=>b.s-a.s||a.i-b.i);
+  if(!toks.length)results=D.nodes.map((n,i)=>({n,i,s:0}));
+  document.getElementById('list').innerHTML=results.map(r=>`<div class="item" data-id="${r.n.id}" onclick="focusNode('${r.n.id}')"><span class="dot" style="background:${PHC[r.n.phase]}"></span>${r.n.title}<span style="font-size:9px;color:#bbb;margin-left:auto">${PHL[r.n.phase]}</span></div>`).join('');
+}
+function focusNode(id){
+  if(network){network.selectNodes([id]);network.focus(id,{scale:1.5,animation:true});}
+  document.querySelectorAll('.list .item').forEach(el=>el.classList.toggle('sel',el.dataset.id===id));
+}
+</script>
+</body>
+</html>
