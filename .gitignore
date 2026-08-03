@@ -1,1 +1,14 @@
-node_modules/\n__pycache__/\n*.pyc
+__pycache__/
+*.pyc
+*.db
+.pytest_cache/
+graph_data_test.json
+graph_data_llm_test.json
+lammps_kb/sitemap.xml
+
+# Derived indexes — rebuilt on first run (keep out of git)
+lammps_kb/bm25_index.json
+lammps_kb/embeddings.npy
+lammps_kb/chunks_for_index.json
+lammps_kb/manifest.json
+vis-network.min.js

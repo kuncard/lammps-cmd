@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>LAMMPS Manual Search</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f8f6f0;--card:#fff;--text:#2d2d2d;--muted:#999;
+  --accent:#5e81ac;--border:#e0dcd4;--highlight:#fff3b0;
+}
+body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text);max-width:860px;margin:0 auto;padding:32px 16px}
+h1{font-size:24px;margin-bottom:4px}
+.sub{color:var(--muted);font-size:13px;margin-bottom:20px}
+.sub a{color:var(--accent)}
+
+/* search bar */
+.toolbar{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.toolbar input{flex:1;min-width:200px;padding:12px 16px;font-size:16px;border:2px solid var(--border);border-radius:10px;outline:none}
+.toolbar input:focus{border-color:var(--accent)}
+.toolbar select{padding:12px;font-size:14px;border:2px solid var(--border);border-radius:10px;outline:none;background:var(--card);cursor:pointer}
+.toolbar select:focus{border-color:var(--accent)}
+
+/* stats bar */
+.stats{font-size:13px;color:var(--muted);margin-bottom:12px}
+.stats strong{color:var(--text)}
+
+/* results */
+.result{border-left:3px solid var(--accent);padding:12px 16px;margin-bottom:12px;background:var(--card);border-radius:0 8px 8px 0;transition:box-shadow .15s}
+.result:hover{box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.result .title{font-weight:600;margin-bottom:2px}
+.result .title .cat{display:inline-block;font-size:10px;font-weight:500;color:var(--accent);background:rgba(94,129,172,.1);padding:1px 6px;border-radius:4px;margin-left:6px;vertical-align:middle}
+.result .meta{font-size:12px;color:var(--muted);margin-bottom:6px}
+.result .text{font-size:14px;color:#555;line-height:1.55}
+.result .text mark{background:var(--highlight);color:inherit;padding:0 1px;border-radius:2px}
+.result a{color:var(--accent);text-decoration:none;font-size:12px;display:inline-block;margin-top:4px}
+.result a:hover{text-decoration:underline}
+
+/* states */
+.loading{color:var(--muted);font-size:14px;text-align:center;padding:40px 0}
+.empty{color:var(--muted);font-size:14px;text-align:center;padding:60px 0}
+.error{color:#bf616a;font-size:14px;text-align:center;padding:40px 0}
+
+/* mobile */
+@media(max-width:600px){
+  body{padding:20px 12px}
+  h1{font-size:20px}
+  .toolbar{flex-direction:column}
+  .toolbar input{min-width:100%}
+  .result{padding:10px 12px}
+}
+</style>
+</head>
+<body>
+
+<h1>LAMMPS Manual Search</h1>
+<p class="sub">910 commands &middot; BM25 + semantic vector &middot; <a href="/graph">knowledge graph</a></p>
+
+<div class="toolbar">
+  <input type="text" id="q" placeholder="e.g. fix nvt, how to control temperature, timestep default..." autofocus>
+  <select id="filter">
+    <option value="">All categories</option>
+    <option value="Fix">Fix</option>
+    <option value="Compute">Compute</option>
+    <option value="Pair">Pair</option>
+    <option value="Bond">Bond</option>
+    <option value="Angle">Angle</option>
+    <option value="Dihedral">Dihedral</option>
+    <option value="Improper">Improper</option>
+    <option value="Dump">Dump</option>
+    <option value="KSpace">KSpace</option>
+    <option value="HowTo">HowTo</option>
+    <option value="General">General</option>
+  </select>
+</div>
+
+<div id="stats" class="stats" hidden></div>
+<div id="results"><p class="empty">Type a query above to search</p></div>
+
+<script>
+const inp = document.getElementById('q');
+const filter = document.getElementById('filter');
+const out = document.getElementById('results');
+const statsEl = document.getElementById('stats');
+let lastResults = [];
+let lastTokens = [];
+let timer;
+
+inp.addEventListener('input', () => {
+  clearTimeout(timer);
+  const q = inp.value.trim();
+  if (!q) { reset(); return; }
+  out.innerHTML = '<p class="loading">Searching...</p>';
+  statsEl.hidden = true;
+  timer = setTimeout(() => search(q), 300);
+});
+
+filter.addEventListener('change', () => render(lastResults));
+
+function reset() {
+  out.innerHTML = '<p class="empty">Type a query above to search</p>';
+  statsEl.hidden = true;
+  lastResults = [];
+  lastTokens = [];
+}
+
+// derive category from cmd_id
+function cmdCategory(cmdId) {
+  if (!cmdId) return 'General';
+  const map = {fix_:'Fix',compute_:'Compute',pair_:'Pair',bond_:'Bond',
+    angle_:'Angle',dihedral_:'Dihedral',improper_:'Improper',dump_:'Dump',
+    kspace_:'KSpace',Howto_:'HowTo'};
+  for (const [pfx, cat] of Object.entries(map)) {
+    if (cmdId.startsWith(pfx)) return cat;
+  }
+  return 'General';
+}
+
+function highlight(text, tokens) {
+  if (!tokens || !tokens.length || !text) return text;
+  let escaped = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  for (const w of tokens) {
+    const re = new RegExp(`(${w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`,'gi');
+    escaped = escaped.replace(re, '<mark>$1</mark>');
+  }
+  return escaped;
+}
+
+function render(results) {
+  const cat = filter.value;
+  const filtered = cat ? results.filter(r => r._category === cat) : results;
+
+  if (!results.length) return;
+  statsEl.hidden = false;
+  statsEl.innerHTML = `<strong>${results.length}</strong> results${cat ? ' in <strong>' + cat + '</strong>' : ''}${filtered.length !== results.length ? ' (showing <strong>' + filtered.length + '</strong>)' : ''}`;
+
+  if (!filtered.length) {
+    out.innerHTML = '<p class="empty">No results in this category</p>';
+    return;
+  }
+
+  out.innerHTML = filtered.map((r, i) => `
+    <div class="result">
+      <div class="title">${i+1}. ${r.title} <span class="cat">${r._category}</span></div>
+      <div class="meta">${r.section} &middot; RRF ${r.rrf_score?.toFixed(4) || '-'}</div>
+      <div class="text">${highlight((r.text || '').slice(0, 300), lastTokens)}</div>
+      <a href="${r.url}" target="_blank">${r.url}</a>
+    </div>
+  `).join('');
+}
+
+async function search(q) {
+  try {
+    const r = await fetch('/api/search', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({question: q, top_k: 15})
+    });
+    if (!r.ok) {
+      const err = await r.json();
+      out.innerHTML = '<p class="error">' + (err.error || 'Search failed') + '</p>';
+      statsEl.hidden = true;
+      return;
+    }
+    const d = await r.json();
+    // store tokens from backend for accurate highlighting
+    lastTokens = d.query_tokens || [];
+    // attach category for frontend filtering
+    lastResults = (d.results || []).map(r => ({...r, _category: cmdCategory(r.cmd_id)}));
+    if (!lastResults.length) {
+      out.innerHTML = '<p class="empty">No results found</p>';
+      statsEl.hidden = true;
+      return;
+    }
+    render(lastResults);
+  } catch(e) {
+    out.innerHTML = '<p class="error">Network error: ' + e.message + '</p>';
+    statsEl.hidden = true;
+  }
+}
+</script>
+
+</body>
+</html>

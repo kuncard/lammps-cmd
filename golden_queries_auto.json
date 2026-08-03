@@ -1,0 +1,250 @@
+[
+  {
+    "category": "graph_alternative",
+    "query": "fix ave/time command vs compute reduce command",
+    "expected_ids": [
+      "fix_ave_time",
+      "compute_reduce"
+    ]
+  },
+  {
+    "category": "graph_alternative",
+    "query": "difference between fix ave/time command and compute reduce command",
+    "expected_ids": [
+      "fix_ave_time",
+      "compute_reduce"
+    ]
+  },
+  {
+    "category": "graph_alternative",
+    "query": "fix property/atom command vs group command",
+    "expected_ids": [
+      "fix_property_atom",
+      "group"
+    ]
+  },
+  {
+    "category": "graph_alternative",
+    "query": "difference between fix property/atom command and group command",
+    "expected_ids": [
+      "fix_property_atom",
+      "group"
+    ]
+  },
+  {
+    "category": "graph_alternative",
+    "query": "pair_style command vs bond_style command",
+    "expected_ids": [
+      "pair_style",
+      "bond_style"
+    ]
+  },
+  {
+    "category": "graph_alternative",
+    "query": "difference between pair_style command and bond_style command",
+    "expected_ids": [
+      "pair_style",
+      "bond_style"
+    ]
+  },
+  {
+    "category": "graph_related",
+    "query": "compute chunk/atom command and fix ave/chunk command",
+    "expected_ids": [
+      "compute_chunk_atom",
+      "fix_ave_chunk"
+    ]
+  },
+  {
+    "category": "graph_related",
+    "query": "compute pressure command and compute temp command",
+    "expected_ids": [
+      "compute_pressure",
+      "compute_temp"
+    ]
+  },
+  {
+    "category": "graph_related",
+    "query": "compute rheo/property/atom command and compute reduce command",
+    "expected_ids": [
+      "compute_rheo_property_atom",
+      "compute_reduce"
+    ]
+  },
+  {
+    "category": "graph_related",
+    "query": "compute rheo/property/atom command and fix ave/atom command",
+    "expected_ids": [
+      "compute_rheo_property_atom",
+      "fix_ave_atom"
+    ]
+  },
+  {
+    "category": "graph_related",
+    "query": "compute rheo/property/atom command and fix ave/chunk command",
+    "expected_ids": [
+      "compute_rheo_property_atom",
+      "fix_ave_chunk"
+    ]
+  },
+  {
+    "category": "graph_related",
+    "query": "compute temp command and compute pressure command",
+    "expected_ids": [
+      "compute_temp",
+      "compute_pressure"
+    ]
+  },
+  {
+    "category": "graph_related",
+    "query": "dump image command and dump_modify command",
+    "expected_ids": [
+      "dump_image",
+      "dump_modify"
+    ]
+  },
+  {
+    "category": "graph_related",
+    "query": "dump image command and fix graphics/arrows command",
+    "expected_ids": [
+      "dump_image",
+      "fix_graphics_arrows"
+    ]
+  },
+  {
+    "category": "graph_related",
+    "query": "dump image command and fix graphics/isosurface command",
+    "expected_ids": [
+      "dump_image",
+      "fix_graphics_isosurface"
+    ]
+  },
+  {
+    "category": "graph_related",
+    "query": "dump image command and fix graphics/labels command",
+    "expected_ids": [
+      "dump_image",
+      "fix_graphics_labels"
+    ]
+  },
+  {
+    "category": "graph_related",
+    "query": "dump image command and fix graphics/objects command",
+    "expected_ids": [
+      "dump_image",
+      "fix_graphics_objects"
+    ]
+  },
+  {
+    "category": "graph_related",
+    "query": "dump image command and fix graphics/periodic command",
+    "expected_ids": [
+      "dump_image",
+      "fix_graphics_periodic"
+    ]
+  },
+  {
+    "category": "graph_related",
+    "query": "dump_modify command and dump image command",
+    "expected_ids": [
+      "dump_modify",
+      "dump_image"
+    ]
+  },
+  {
+    "category": "graph_related",
+    "query": "fix atom/swap command and fix nvt command",
+    "expected_ids": [
+      "fix_atom_swap",
+      "fix_nh"
+    ]
+  },
+  {
+    "category": "graph_related",
+    "query": "fix atom/swap command and fix deposit command",
+    "expected_ids": [
+      "fix_atom_swap",
+      "fix_deposit"
+    ]
+  },
+  {
+    "category": "graph_related",
+    "query": "fix atom/swap command and fix gcmc command",
+    "expected_ids": [
+      "fix_atom_swap",
+      "fix_gcmc"
+    ]
+  },
+  {
+    "category": "graph_related",
+    "query": "fix ave/atom command and fix ave/histo command",
+    "expected_ids": [
+      "fix_ave_atom",
+      "fix_ave_histo"
+    ]
+  },
+  {
+    "category": "graph_related",
+    "query": "fix ave/atom command and fix ave/chunk command",
+    "expected_ids": [
+      "fix_ave_atom",
+      "fix_ave_chunk"
+    ]
+  },
+  {
+    "category": "graph_related",
+    "query": "fix ave/atom command and fix ave/time command",
+    "expected_ids": [
+      "fix_ave_atom",
+      "fix_ave_time"
+    ]
+  },
+  {
+    "category": "graph_related",
+    "query": "fix ave/chunk command and fix ave/atom command",
+    "expected_ids": [
+      "fix_ave_chunk",
+      "fix_ave_atom"
+    ]
+  },
+  {
+    "category": "graph_related",
+    "query": "fix ave/chunk command and fix ave/histo command",
+    "expected_ids": [
+      "fix_ave_chunk",
+      "fix_ave_histo"
+    ]
+  },
+  {
+    "category": "graph_related",
+    "query": "fix ave/chunk command and fix ave/time command",
+    "expected_ids": [
+      "fix_ave_chunk",
+      "fix_ave_time"
+    ]
+  },
+  {
+    "category": "graph_related",
+    "query": "fix ave/histo command and fix ave/atom command",
+    "expected_ids": [
+      "fix_ave_histo",
+      "fix_ave_atom"
+    ]
+  },
+  {
+    "category": "graph_related",
+    "query": "fix ave/histo command and fix ave/chunk command",
+    "expected_ids": [
+      "fix_ave_histo",
+      "fix_ave_chunk"
+    ]
+  },
+  {
+    "category": "graph_related",
+    "query": "fix ave/histo command and fix ave/time command",
+    "expected_ids": [
+      "fix_ave_histo",
+      "fix_ave_time"
+    ]
+  }
+]

@@ -1,0 +1,146 @@
+---
+id: fix_orient
+title: "fix orient/fcc command"
+url: https://docs.lammps.org/fix_orient.html
+---
+
+# fix orient/fcc command
+
+## Syntax
+
+```
+fix ID group-ID orient/fcc nstats dir alat dE cutlo cuthi file0 file1
+fix ID group-ID orient/bcc nstats dir alat dE cutlo cuthi file0 file1
+```
+
+## Description
+
+The fix applies an orientation-dependent force to atoms near a planar
+grain boundary which can be used to induce grain boundary migration
+(in the direction perpendicular to the grain boundary plane).  The
+motivation and explanation of this force and its application are
+described in (Janssens). The adaptation to bcc crystals
+is described in (Wicaksono1). The computed force is only
+applied to atoms in the fix group.
+
+The basic idea is that atoms in one grain (on one side of the
+boundary) have a potential energy dE added to them.  Atoms in the
+other grain have 0.0 potential energy added.  Atoms near the boundary
+(whose neighbor environment is intermediate between the two grain
+orientations) have an energy between 0.0 and dE added.  This creates
+an effective driving force to reduce the potential energy of atoms
+near the boundary by pushing them towards one of the grain
+orientations.  For dir = 1 and dE > 0, the boundary will thus move so
+that the grain described by file0 grows and the grain described by
+file1 shrinks.  Thus this fix is designed for simulations of two-grain
+systems, either with one grain boundary and free surfaces parallel to
+the boundary, or a system with periodic boundary conditions and two
+equal and opposite grain boundaries.  In either case, the entire
+system can displace during the simulation, and such motion should be
+accounted for in measuring the grain boundary velocity.
+
+The potential energy added to atom I is given by these formulas
+
+\[\begin{split} \xi_{i} = & \sum_{j=1}^{12} \left| \mathbf{r}_{j} - \mathbf{r}_{j}^\mathrm{I} \right| \qquad\qquad\left(1\right) \\
+ \\
+\xi_\mathrm{IJ} = & \sum_{j=1}^{12} \left| \mathbf{r}_{j}^\mathrm{J} - \mathbf{r}_{j}^\mathrm{I} \right| \qquad\qquad\left(2\right)\\
+\\
+\xi_\mathrm{low}  = & \mathrm{cutlo} \, \xi_\mathrm{IJ}  \qquad\qquad\qquad\left(3\right)\\
+\xi_\mathrm{high}  = & \mathrm{cuthi} \, \xi_\mathrm{IJ} \qquad\qquad\qquad\left(4\right) \\
+\\
+\omega_{i} = & \frac{\pi}{2} \frac{\xi_{i} - \xi_\mathrm{low}}{\xi_\mathrm{high} - \xi_\mathrm{low}} \qquad\qquad\left(5\right)\\
+\\
+u_{i}  = & 0 \quad\quad\qquad\qquad\qquad \textrm{ for } \qquad \xi_{i} < \xi_\mathrm{low}\\
+       = & \mathrm{dE}\,\frac{1 - \cos(2 \omega_{i})}{2}
+ \qquad \mathrm{for }\qquad \xi_\mathrm{low} < \xi_{i} < \xi_\mathrm{high}  \quad \left(6\right) \\
+       = & \mathrm{dE} \quad\qquad\qquad\qquad\textrm{ for } \qquad \xi_\mathrm{high} < \xi_{i}\end{split}\]
+
+which are fully explained in (Janssens).  For fcc crystals
+this order parameter Xi for atom I in equation (1) is a sum over the
+12 nearest neighbors of atom I. For bcc crystals it is the
+corresponding sum of the 8 nearest neighbors. Rj is the vector from
+atom I to its neighbor J, and RIj is a vector in the reference
+(perfect) crystal.  That is, if dir = 0/1, then RIj is a vector to an
+atom coord from file 0/1.  Equation (2) gives the expected value of
+the order parameter XiIJ in the other grain.  Hi and lo cutoffs are
+defined in equations (3) and (4), using the input parameters cutlo
+and cuthi as thresholds to avoid adding grain boundary energy when
+the deviation in the order parameter from 0 or 1 is small (e.g. due to
+thermal fluctuations in a perfect crystal).  The added potential
+energy Ui for atom I is given in equation (6) where it is interpolated
+between 0 and dE using the two threshold Xi values and the Wi value of
+equation (5).
+
+The derivative of this energy expression gives the force on each atom
+which thus depends on the orientation of its neighbors relative to the
+2 grain orientations.  Only atoms near the grain boundary feel a net
+force which tends to drive them to one of the two grain orientations.
+
+In equation (1), the reference vector used for each neighbor is the
+reference vector closest to the actual neighbor position.  This means
+it is possible two different neighbors will use the same reference
+vector.  In such cases, the atom in question is far from a perfect
+orientation and will likely receive the full dE addition, so the
+effect of duplicate reference vector usage is small.
+
+The dir parameter determines which grain wants to grow at the
+expense of the other.  A value of 0 means the first grain will shrink;
+a value of 1 means it will grow.  This assumes that dE is positive.
+The reverse will be true if dE is negative.
+
+The alat parameter is the cubic lattice constant for the fcc or bcc
+material and is only used to compute a cutoff distance of 1.57 * alat
+/ sqrt(2) for finding the 12 or 8 nearest neighbors of each atom
+(which should be valid for an fcc or bcc crystal).  A longer/shorter
+cutoff can be imposed by adjusting alat.  If a particular atom has
+less than 12 or 8 neighbors within the cutoff, the order parameter of
+equation (1) is effectively multiplied by 12 or 8 divided by the
+actual number of neighbors within the cutoff.
+
+The dE parameter is the maximum amount of additional energy added to
+each atom in the grain which wants to shrink.
+
+The cutlo and cuthi parameters are used to reduce the force added
+to bulk atoms in each grain far away from the boundary.  An atom in
+the bulk surrounded by neighbors at the ideal grain orientation would
+compute an order parameter of 0 or 1 and have no force added.
+However, thermal vibrations in the solid will cause the order
+parameters to be greater than 0 or less than 1.  The cutoff parameters
+mask this effect, allowing forces to only be added to atoms with
+order-parameters between the cutoff values.
+
+File0 and file1 are filenames for the two grains which each
+contain 6 vectors (6 lines with 3 values per line) which specify the
+grain orientations.  Each vector is a displacement from a central atom
+(0,0,0) to a nearest neighbor atom in an fcc lattice at the proper
+orientation.  The vector lengths should all be identical since an fcc
+lattice has a coordination number of 12.  Only 6 are listed due to
+symmetry, so the list must include one from each pair of
+equal-and-opposite neighbors.  A pair of orientation files for a
+Sigma=5 tilt boundary are shown below. A tutorial that can help for
+writing the orientation files is given in (Wicaksono2)
+
+## Keywords
+
+- **LAMMPS Branch:**: develop
+- **Downloads:**: PDF
+- **Git Info:**: 4Jul2026
+
+## Examples
+
+```
+fix gb all orient/fcc 0 1 4.032008 0.001 0.25 0.75 xi.vec chi.vec
+fix gb all orient/bcc 0 1 2.882 0.001 0.25 0.75 ngb.left ngb.right
+```
+
+## Restrictions
+
+Restrictions 
+These fixes are part of the ORIENT package.  They are only enabled if LAMMPS
+was built with that package.  See the Build package page for more info.
+These fixes should only be used with fcc or bcc lattices.
+
+## Related Commands
+
+- [fix_modify](fix_modify.html)
+

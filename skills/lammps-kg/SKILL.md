@@ -1,6 +1,6 @@
 ---
 name: lammps-kg
-description: Search LAMMPS manual — NVT/NPT MD commands with syntax, keywords, defaults, and weighted relationship graph. 22 commands, 47 edges, live doc links.
+description: Search 910 LAMMPS commands via 5-layer pipeline — abbrev, spell, stemming, BM25+vector, graph boost. 3214 edges, 911 manual pages.
 metadata:
   tools:
     - run_skill_script
@@ -12,77 +12,98 @@ metadata:
     - search
 ---
 
-# LAMMPS Command Search — NVT/NPT
+# LAMMPS Knowledge Graph Search
 
-Search 22 LAMMPS command pages for NVT/NPT molecular dynamics. Each result includes
-syntax, keywords table (type/default/description), examples, and live doc links.
+Search 910 LAMMPS command pages with a hybrid retrieval pipeline (BM25 + vector + graph boost).
+Returns structured data from the knowledge graph AND full-text excerpts from the scraped manual.
+Every result links to docs.lammps.org.
 
-**Relationship-aware**: results include graph neighbors with labeled edge types
-(requires / creates / incompatible / alternative / see also).
+**Self-contained**: `git clone` + `pip install -r requirements.txt` → `python app.py` for web UI,
+or `python search_lammps.py search "..."` for CLI.
 
 Script: `search_lammps.py` (in `scripts/`).
 
 ## When to use
 
-- Look up a LAMMPS command syntax, keyword defaults, or examples
-- Find which commands are needed before using fix nvt/npt
-- Understand command relationships (what requires what, what creates what)
-- Check parameter defaults before writing input scripts
-- Explore NVT/NPT workflow: init → build → force → integrator → output
+- Look up LAMMPS command syntax, keyword defaults, or examples
+- Search the full manual text for concepts, parameter recommendations, or workflows
+- Check command relationships (requires / incompatible / creates / alternative / related)
+- Natural language queries like "how to control temperature"
+- Autocomplete partial command or keyword names
+
+## Search Pipeline
+
+```
+User query
+  -> Expand abbreviations + phrases (22 abbrev + 3 phrase maps)
+  -> Graph-aware query expansion (QueryExpander: word-to-ID index)
+  -> Spell correction (trigram overlap + Levenshtein <= 2)
+  -> Stemming (recursive suffix stripping)
+  -> BM25 IDF-weighted ranking (k1=1.5, b=0.75)
+  -> [+ Vector search: all-mpnet-base-v2 768d, RRF fusion]
+  -> Graph boost: neighbor voting via 3214 weighted edges
+```
 
 ## Commands
 
-### search — Search LAMMPS commands
-
+### search
 ```
-run_skill_script(
-    skill_name="lammps-kg",
-    script_name="search_lammps.py",
-    args="search 'fix nvt' --limit 5"
-)
+python search_lammps.py search "nvt thermostat pdamp" --limit 5 [--vector]
 ```
+Returns JSON: ranked results with title, section, score, text preview, URL.
 
-Returns JSON: ranked results with title, synopsis, syntax, keywords, examples, URL.
-
-Options: `--limit N`, `--phase TYPE`, `--verbose`
-
-### detail — Get full command documentation
-
+### suggest
 ```
-run_skill_script(
-    skill_name="lammps-kg",
-    script_name="search_lammps.py",
-    args="detail fix_nh"
-)
+python search_lammps.py suggest therm
 ```
 
-Returns full structured data: syntax, keywords table, examples, restrictions, relationships.
-
-### neighbors — Get related commands
-
+### health
 ```
-run_skill_script(
-    skill_name="lammps-kg",
-    script_name="search_lammps.py",
-    args="neighbors fix_nh"
-)
+python search_lammps.py health
 ```
 
-Returns all connected commands grouped by relationship type.
+### detail
+```
+python search_lammps.py detail fix_nh
+```
+
+### neighbors
+```
+python search_lammps.py neighbors fix_nh
+```
 
 ## Edge types (weighted)
 
 | Type | Weight | Meaning |
 |------|--------|---------|
-| requires | 10 | Hard dependency — "must set before" |
-| incompatible | 8 | "do NOT use with" |
-| creates | 7 | "internally creates" |
-| howto_ref | 3 | Tutorial discusses this command |
-| related | 2 | Cross-reference / see also |
+| requires | 10 | Hard dependency |
+| incompatible | 8 | Cannot be used together |
+| creates | 7 | Internally creates |
+| alternative | 5 | Alternative approach |
+| related | 3 | Cross-reference |
+| refers_to | 2 | Mentions/references the command |
+| howto_ref | 0.8 | How-to guide reference |
+
+## Coverage
+
+910 nodes, 3214 edges. 911 markdown articles across 11 categories:
+
+| Category | Count |
+|----------|-------|
+| fix | 245 |
+| compute | 155 |
+| general | 176 |
+| pair | 173 |
+| howto | 56 |
+| angle | 30 |
+| bond | 29 |
+| dihedral | 20 |
+| improper | 17 |
+| dump | 8 |
+| kspace | 2 |
 
 ## Data
 
-22 commands covering the NVT/NPT MD workflow:
-Initialize → Build System → Force Field → Integrator → Compute → Output → Guides
-
-Live doc links: https://docs.lammps.org/{command}.html
+- `graph_data_full.json`: 910 nodes, 3214 weighted edges
+- `lammps_kb/*.md`: 911 scraped manual pages (full-text search)
+- Live links: https://docs.lammps.org/{command}.html

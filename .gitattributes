@@ -1,0 +1,3 @@
+# Optimize git storage for large JSON files
+graph_data_full.json  delta
+*.json  delta

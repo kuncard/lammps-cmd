@@ -1,0 +1,812 @@
+[
+  {
+    "category": "exact_command",
+    "query": "fix nvt",
+    "expected_ids": [
+      "fix_nh"
+    ]
+  },
+  {
+    "category": "exact_command",
+    "query": "velocity create",
+    "expected_ids": [
+      "velocity"
+    ]
+  },
+  {
+    "category": "exact_command",
+    "query": "compute temp",
+    "expected_ids": [
+      "compute_temp"
+    ]
+  },
+  {
+    "category": "natural_language",
+    "query": "how to control temperature in MD simulation",
+    "expected_ids": [
+      "fix_nh",
+      "fix_langevin",
+      "Howto_thermostat"
+    ]
+  },
+  {
+    "category": "natural_language",
+    "query": "how to set up simulation box and atoms",
+    "expected_ids": [
+      "create_box",
+      "create_atoms",
+      "read_data",
+      "region"
+    ]
+  },
+  {
+    "category": "natural_language",
+    "query": "what pair potential for Lennard-Jones fluid",
+    "expected_ids": [
+      "pair_style"
+    ]
+  },
+  {
+    "category": "spelling_error",
+    "query": "boundry condition",
+    "expected_ids": [
+      "boundary"
+    ]
+  },
+  {
+    "category": "spelling_error",
+    "query": "temprature compute",
+    "expected_ids": [
+      "compute_temp"
+    ]
+  },
+  {
+    "category": "spelling_error",
+    "query": "Nose Hoover termostat",
+    "expected_ids": [
+      "fix_nh",
+      "Howto_thermostat"
+    ]
+  },
+  {
+    "category": "abbreviation",
+    "query": "nvt pdamp default",
+    "expected_ids": [
+      "fix_nh"
+    ]
+  },
+  {
+    "category": "abbreviation",
+    "query": "lj cutoff potential",
+    "expected_ids": [
+      "pair_style"
+    ]
+  },
+  {
+    "category": "abbreviation",
+    "query": "npt barostat setup",
+    "expected_ids": [
+      "fix_nh"
+    ]
+  },
+  {
+    "category": "parameter_lookup",
+    "query": "timestep default value metal units",
+    "expected_ids": [
+      "timestep",
+      "units"
+    ]
+  },
+  {
+    "category": "parameter_lookup",
+    "query": "Tdamp recommendation for thermostat",
+    "expected_ids": [
+      "fix_nh",
+      "fix_langevin"
+    ]
+  },
+  {
+    "category": "parameter_lookup",
+    "query": "thermo output every 100 steps",
+    "expected_ids": [
+      "thermo"
+    ]
+  },
+  {
+    "category": "conceptual",
+    "query": "how does a thermostat work in molecular dynamics",
+    "expected_ids": [
+      "Howto_thermostat",
+      "fix_nh",
+      "fix_langevin"
+    ]
+  },
+  {
+    "category": "conceptual",
+    "query": "what is the difference between NVT and NPT ensembles",
+    "expected_ids": [
+      "fix_nh",
+      "Howto_thermostat"
+    ]
+  },
+  {
+    "category": "conceptual",
+    "query": "explain periodic boundary conditions in LAMMPS",
+    "expected_ids": [
+      "boundary",
+      "Howto_boundary"
+    ]
+  },
+  {
+    "category": "conceptual",
+    "query": "how does Ewald summation work for long-range electrostatics",
+    "expected_ids": [
+      "kspace_style"
+    ]
+  },
+  {
+    "category": "conceptual",
+    "query": "what are pair styles and how to choose them",
+    "expected_ids": [
+      "pair_style"
+    ]
+  },
+  {
+    "category": "comparative",
+    "query": "Nose-Hoover vs Langevin thermostat which is better",
+    "expected_ids": [
+      "fix_nh",
+      "fix_langevin",
+      "Howto_thermostat"
+    ]
+  },
+  {
+    "category": "comparative",
+    "query": "Lennard-Jones vs EAM potential for metals",
+    "expected_ids": [
+      "pair_style",
+      "pair_eam"
+    ]
+  },
+  {
+    "category": "comparative",
+    "query": "fix shake vs fix rigid for constrained molecules",
+    "expected_ids": [
+      "fix_shake",
+      "fix_rigid"
+    ]
+  },
+  {
+    "category": "comparative",
+    "query": "velocity verlet vs rRESPA integrator differences",
+    "expected_ids": [
+      "run_style"
+    ]
+  },
+  {
+    "category": "troubleshooting",
+    "query": "why are atoms lost during my simulation",
+    "expected_ids": [
+      "Errors_messages",
+      "thermo_modify"
+    ]
+  },
+  {
+    "category": "troubleshooting",
+    "query": "simulation crashes with bond atoms missing error",
+    "expected_ids": [
+      "Errors_messages",
+      "special_bonds"
+    ]
+  },
+  {
+    "category": "troubleshooting",
+    "query": "how to fix timestep too large warning",
+    "expected_ids": [
+      "timestep",
+      "fix_nve"
+    ]
+  },
+  {
+    "category": "troubleshooting",
+    "query": "energy is not conserved in NVE ensemble",
+    "expected_ids": [
+      "fix_nve",
+      "timestep",
+      "Howto_thermostat"
+    ]
+  },
+  {
+    "category": "troubleshooting",
+    "query": "pressure fluctuates too much in NPT how to damp",
+    "expected_ids": [
+      "fix_nh",
+      "Howto_thermostat"
+    ]
+  },
+  {
+    "category": "compound",
+    "query": "NVT ensemble with EAM potential for copper",
+    "expected_ids": [
+      "fix_nh",
+      "pair_eam"
+    ]
+  },
+  {
+    "category": "compound",
+    "query": "how to compute radial distribution function for water",
+    "expected_ids": [
+      "compute_rdf"
+    ]
+  },
+  {
+    "category": "compound",
+    "query": "NPT simulation with real units and SHAKE constraints",
+    "expected_ids": [
+      "fix_nh",
+      "units",
+      "fix_shake"
+    ]
+  },
+  {
+    "category": "compound",
+    "query": "deform box while controlling temperature with langevin",
+    "expected_ids": [
+      "fix_deform",
+      "fix_langevin"
+    ]
+  },
+  {
+    "category": "beginner",
+    "query": "how to start my first LAMMPS simulation step by step",
+    "expected_ids": [
+      "Howto_lammps",
+      "run",
+      "read_data"
+    ]
+  },
+  {
+    "category": "beginner",
+    "query": "what is a LAMMPS input script structure",
+    "expected_ids": [
+      "Howto_lammps"
+    ]
+  },
+  {
+    "category": "beginner",
+    "query": "how to visualize LAMMPS trajectory output",
+    "expected_ids": [
+      "dump"
+    ]
+  },
+  {
+    "category": "beginner",
+    "query": "what units should I use for my simulation",
+    "expected_ids": [
+      "units"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use angle_style mesocnt command",
+    "expected_ids": [
+      "angle_mesocnt"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use angle_coeff command",
+    "expected_ids": [
+      "angle_coeff"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use angle_style amoeba command",
+    "expected_ids": [
+      "angle_amoeba"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use angle_style none command",
+    "expected_ids": [
+      "angle_none"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use angle_style cosine/shift command",
+    "expected_ids": [
+      "angle_cosine_shift"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use bond_style gaussian command",
+    "expected_ids": [
+      "bond_gaussian"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use bond_coeff command",
+    "expected_ids": [
+      "bond_coeff"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use bond_style rheo/shell command",
+    "expected_ids": [
+      "bond_rheo_shell"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use bond_style class2 command",
+    "expected_ids": [
+      "bond_class2"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use bond_style quartic command",
+    "expected_ids": [
+      "bond_quartic"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use compute temp/partial command",
+    "expected_ids": [
+      "compute_temp_partial"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use compute count/type command",
+    "expected_ids": [
+      "compute_count_type"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use compute vcm/chunk command",
+    "expected_ids": [
+      "compute_vcm_chunk"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use compute smd/tlsph/strain command",
+    "expected_ids": [
+      "compute_smd_tlsph_strain"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use compute bond command",
+    "expected_ids": [
+      "compute_bond"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use dihedral_style charmm command",
+    "expected_ids": [
+      "dihedral_charmm"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use dihedral_coeff command",
+    "expected_ids": [
+      "dihedral_coeff"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use dihedral_style harmonic command",
+    "expected_ids": [
+      "dihedral_harmonic"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use dihedral_style helix command",
+    "expected_ids": [
+      "dihedral_helix"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use dihedral_style zero command",
+    "expected_ids": [
+      "dihedral_zero"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use dump image command",
+    "expected_ids": [
+      "dump_image"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use dump molfile command",
+    "expected_ids": [
+      "dump_molfile"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use dump netcdf command",
+    "expected_ids": [
+      "dump_netcdf"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use dump_modify command",
+    "expected_ids": [
+      "dump_modify"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use dump vtk command",
+    "expected_ids": [
+      "dump_vtk"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use fix eos/cv command",
+    "expected_ids": [
+      "fix_eos_cv"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use fix nvt command",
+    "expected_ids": [
+      "fix_nh"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use fix oneway command",
+    "expected_ids": [
+      "fix_oneway"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use fix graphics/chunk command",
+    "expected_ids": [
+      "fix_graphics_chunk"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use fix spring command",
+    "expected_ids": [
+      "fix_spring"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use Angle Styles",
+    "expected_ids": [
+      "angles"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use fix atc command",
+    "expected_ids": [
+      "atc_mesh_create_faceset_box"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use info command",
+    "expected_ids": [
+      "info"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use create_bonds command",
+    "expected_ids": [
+      "create_bonds"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use 10.2.9. Convert bulk system to slab",
+    "expected_ids": [
+      "Howto_bulk2slab"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use 10.1.8. Coupling LAMMPS to other codes",
+    "expected_ids": [
+      "Howto_couple"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use 10.4.6. TIP4P and OPC water models",
+    "expected_ids": [
+      "Howto_tip4p"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use 10.6.2. LAMMPS GitHub tutorial",
+    "expected_ids": [
+      "Howto_github"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use 10.5.4. Body particles",
+    "expected_ids": [
+      "Howto_body"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use improper_coeff command",
+    "expected_ids": [
+      "improper_coeff"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use improper_style ring command",
+    "expected_ids": [
+      "improper_ring"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use improper_style class2 command",
+    "expected_ids": [
+      "improper_class2"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use improper_style distance command",
+    "expected_ids": [
+      "improper_distance"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use improper_style sqdistharm command",
+    "expected_ids": [
+      "improper_sqdistharm"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use pair_style table command",
+    "expected_ids": [
+      "pair_table"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use pair_style lcbop command",
+    "expected_ids": [
+      "pair_lcbop"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use pair_style bop command",
+    "expected_ids": [
+      "pair_bop"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use pair_style polymorphic command",
+    "expected_ids": [
+      "pair_polymorphic"
+    ]
+  },
+  {
+    "category": "command_lookup",
+    "query": "how to use pair_style sph/heatconduction command",
+    "expected_ids": [
+      "pair_sph_heatconduction"
+    ]
+  },
+  {
+    "category": "natural_language",
+    "query": "how to run molecular dynamics at constant pressure",
+    "expected_ids": [
+      "fix_nh",
+      "fix_npt"
+    ]
+  },
+  {
+    "category": "natural_language",
+    "query": "what does the timestep do in MD simulation",
+    "expected_ids": [
+      "timestep",
+      "run"
+    ]
+  },
+  {
+    "category": "natural_language",
+    "query": "how to compute the total energy of the system",
+    "expected_ids": [
+      "compute_pe",
+      "compute_ke",
+      "thermo_style"
+    ]
+  },
+  {
+    "category": "natural_language",
+    "query": "how to apply an external electric field",
+    "expected_ids": [
+      "fix_efield",
+      "fix_efield_lepton"
+    ]
+  },
+  {
+    "category": "natural_language",
+    "query": "how to set up a simulation with water molecules",
+    "expected_ids": [
+      "pair_style",
+      "bond_coeff",
+      "angle_coeff",
+      "Howto_tip4p"
+    ]
+  },
+  {
+    "category": "natural_language",
+    "query": "how to compute pressure tensor in LAMMPS",
+    "expected_ids": [
+      "compute_pressure",
+      "compute_stress_atom"
+    ]
+  },
+  {
+    "category": "natural_language",
+    "query": "how to minimize energy before running dynamics",
+    "expected_ids": [
+      "minimize",
+      "min_style",
+      "min_modify"
+    ]
+  },
+  {
+    "category": "beginner",
+    "query": "what is the difference between atom_style atomic and molecular",
+    "expected_ids": [
+      "atom_style"
+    ]
+  },
+  {
+    "category": "beginner",
+    "query": "how to read a data file into LAMMPS",
+    "expected_ids": [
+      "read_data"
+    ]
+  },
+  {
+    "category": "beginner",
+    "query": "what does the units command do",
+    "expected_ids": [
+      "units"
+    ]
+  },
+  {
+    "category": "beginner",
+    "query": "how to specify initial atom positions in LAMMPS",
+    "expected_ids": [
+      "create_atoms",
+      "read_data",
+      "region",
+      "lattice"
+    ]
+  },
+  {
+    "category": "troubleshooting",
+    "query": "simulation too slow how to speed up",
+    "expected_ids": [
+      "run_style",
+      "neighbor",
+      "timestep"
+    ]
+  },
+  {
+    "category": "troubleshooting",
+    "query": "thermo output shows nan values",
+    "expected_ids": [
+      "thermo_modify",
+      "Errors_messages"
+    ]
+  },
+  {
+    "category": "troubleshooting",
+    "query": "how to fix lost atoms error in LAMMPS",
+    "expected_ids": [
+      "thermo_modify",
+      "Errors_messages",
+      "boundary"
+    ]
+  },
+  {
+    "category": "troubleshooting",
+    "query": "timestep too large atoms move too fast",
+    "expected_ids": [
+      "timestep",
+      "fix_nve",
+      "velocity"
+    ]
+  },
+  {
+    "category": "troubleshooting",
+    "query": "neighbor list overflow what to do",
+    "expected_ids": [
+      "neighbor",
+      "neigh_modify",
+      "thermo_modify"
+    ]
+  },
+  {
+    "category": "abbreviation",
+    "query": "eam potential for copper",
+    "expected_ids": [
+      "pair_eam"
+    ]
+  },
+  {
+    "category": "abbreviation",
+    "query": "pme vs ewald for long range",
+    "expected_ids": [
+      "kspace_style"
+    ]
+  },
+  {
+    "category": "abbreviation",
+    "query": "meam parameter file format",
+    "expected_ids": [
+      "pair_meam"
+    ]
+  },
+  {
+    "category": "conceptual",
+    "query": "how to choose between NVT and NPT ensemble",
+    "expected_ids": [
+      "fix_nh",
+      "fix_nve",
+      "Howto_thermostat"
+    ]
+  },
+  {
+    "category": "conceptual",
+    "query": "what is a cutoff radius and how to choose it",
+    "expected_ids": [
+      "pair_style",
+      "neighbor"
+    ]
+  },
+  {
+    "category": "conceptual",
+    "query": "difference between atomic and full atom style",
+    "expected_ids": [
+      "atom_style"
+    ]
+  }
+]
